@@ -1,38 +1,33 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import PropTypes from 'prop-types';
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 // card flip effect
 import ReactCardFlip from 'react-card-flip';
 
-export default class DisplayBox extends React.Component {
+class DisplayBox extends React.Component {
 
     constructor() {
       super();
-      this.state = {
-        isFlipped: false
-      };
       this.handleClick = this.handleClick.bind(this);
     }
   
     handleClick(e) {
       e.preventDefault();
-      this.setState(prevState => ({ isFlipped: !prevState.isFlipped }));
+      this.props.setFlipped(!this.props.flipped)
+      this.props.setGenerateButton(false)
     }
-
-    // TODO - figure out how to flip card to front before moving to next one
-    // it is a problem when viewing backside then generating another - it shows the back of the next one
 
     render() {
       if (this.props.extension) {
         return (
-          <ReactCardFlip isFlipped={this.state.isFlipped} flipSpeedBackToFront='0.5' flipSpeedFrontToBack='0.5'> 
+          <ReactCardFlip isFlipped={this.props.flipped} flipSpeedBackToFront={this.props.isGenerateButton && !this.props.flipped ? '0' : '0.5'} flipSpeedFrontToBack='0.5'> 
             <Card className='shadow mx-auto' style={{ maxWidth:'32rem', height:'15rem' }}>
               <Card.Body className='text-dark d-flex justify-content-center align-items-center'>
                 <p className='display-1 fw-bold'>.{this.props.extension[0]}</p>
                 <Button variant='dark' onClick={this.handleClick} size="sm" className='position-absolute bottom-0 start-50 translate-middle'>Reveal</Button>
               </Card.Body>
-            </Card>
-    
+            </Card>   
             <Card className='shadow mx-auto' style={{ maxWidth:'32rem', height:'15rem' }}>
               <Card.Body className='text-dark d-flex justify-content-center align-items-center'>
                 <p className='display-6'>
@@ -47,29 +42,13 @@ export default class DisplayBox extends React.Component {
         return <></>
       }
     }
-
-    // function DisplayBox(props) {
-
-    //     const [isFlipped, setFlipped] = useState(false);
-      
-    //     if (props.extension) {
-    //       return (
-    //         <ReactCardFlip isFlipped={isFlipped}>
-    //           <Card.Body className='text-dark'>
-    //             <p className='display-1 fw-bold'>.{props.extension[0]}</p>
-    //             <button onClick={setFlipped(!isFlipped)}>Click to flip</button>
-    //           </Card.Body>
-    //           <Card.Body className='text-dark'>
-    //             {props.extension[1]}
-    //             {props.extension[2]}
-    //             <button onClick={setFlipped(!isFlipped)}>Click to flip</button>
-    //           </Card.Body>
-    //         </ReactCardFlip>
-    //         // <Card className='shadow mx-auto' style={{ maxWidth:'30rem' }}>
-              
-    //         // </Card>
-    //       )
-    //     }
-    //     return <></>
-    //   }
 }
+
+DisplayBox.propTypes = {
+  flipped: PropTypes.bool.isRequired,
+  setFlipped: PropTypes.func.isRequired,
+  isGenerateButton: PropTypes.bool.isRequired,
+  setGenerateButton: PropTypes.func.isRequired,
+}
+
+export default DisplayBox;

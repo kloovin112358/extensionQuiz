@@ -10,11 +10,23 @@ function App() {
 
   const [extensions, setExtensions] = useState([]);
   const [curExtension, setCurExtension] = useState([]);
+  // stores whether the card is on the backside or not
+  const [isFlipped, setFlipped] = useState(false);
+  // stores whether we pushed the "generate" button, 
+  // otherwise it means we pushed the reveal button,
+  // used to control whether we have an animation delay on the card flip
+  const [isGenerateButton, setGenerateButton] = useState(true);
+
+  const getNewExtension = () => {
+    setCurExtension(extensions[Math.floor(Math.random() * extensions.length)])
+    setGenerateButton(true)
+    setFlipped(false)
+  }
 
   // the first time the extensions are loaded,
   // we need to get a random one
   useEffect(()=>{
-    setCurExtension(extensions[Math.floor(Math.random() * extensions.length)])
+    getNewExtension()
   },[extensions])
 
   useEffect(()=>{
@@ -32,9 +44,15 @@ function App() {
     <>
       <div className='container text-center'>
         <div className='p-5'>
-          <DisplayBox extension={curExtension}/>
+          <DisplayBox 
+            extension={curExtension} 
+            flipped={isFlipped}
+            setFlipped={setFlipped}
+            isGenerateButton={isGenerateButton}
+            setGenerateButton={setGenerateButton}
+          />
           <Button 
-            onClick={() => {setCurExtension(extensions[Math.floor(Math.random() * extensions.length)])}}
+            onClick={getNewExtension}
             variant='light'
             className='shadow mt-3'
           >
